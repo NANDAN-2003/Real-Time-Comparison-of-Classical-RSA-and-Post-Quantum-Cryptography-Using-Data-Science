@@ -35,7 +35,7 @@ public class MainApp {
         System.out.println("Ciphertext Size        : " + rsa.getCiphertextSize() + " bytes");
         System.out.println("Quantum Attack Result  : " + rsaAttackResult);
 
-        CSVLogger.log(
+        /*CSVLogger.log(
                 "RSA",
                 rsa.getKeySize(),
                 rsa.getKeyGenerationTime(),
@@ -43,7 +43,7 @@ public class MainApp {
                 rsa.getDecryptionTime(),
                 rsa.getCiphertextSize(),
                 rsaAttackResult
-        );
+        );*/
 
         System.out.println("-----------------------------------");
 
@@ -64,7 +64,7 @@ public class MainApp {
         System.out.println("Ciphertext Size        : " + pqc.getCiphertextSize() + " bytes");
         System.out.println("Quantum Attack Result  : " + pqcAttackResult);
 
-        CSVLogger.log(
+        /*CSVLogger.log(
                 "PQC",
                 pqc.getKeySize(),
                 pqc.getKeyGenerationTime(),
@@ -72,10 +72,10 @@ public class MainApp {
                 pqc.getDecryptionTime(),
                 pqc.getCiphertextSize(),
                 pqcAttackResult
-        );
+        );*/
 
-        System.out.println("===================================");
-        System.out.println("Results saved in results.csv");
+        //System.out.println("===================================");
+       // System.out.println("Results saved in results.csv");
 
         scanner.close();
     }
