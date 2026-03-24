@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Load dataset
-data = pd.read_csv("result.csv")
+data = pd.read_csv("results.csv")
 
 # Convert time values from microseconds to milliseconds ONLY for plotting
 data["EncryptionTime(ms)"] = data["EncryptionTime(us)"] / 1000

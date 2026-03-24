@@ -10,7 +10,7 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 # -----------------------------
 # 1. Load Dataset
 # -----------------------------
-data = pd.read_csv("result.csv")
+data = pd.read_csv("results.csv")
 
 print("\nDataset Preview:")
 print(data.head())

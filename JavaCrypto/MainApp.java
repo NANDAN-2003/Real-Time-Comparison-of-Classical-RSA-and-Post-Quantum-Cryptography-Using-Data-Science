@@ -5,78 +5,72 @@ import JavaCrypto.pqc.PQCEncryption;
 import JavaCrypto.attack.QuantumAttackSimulator;
 import JavaCrypto.logger.CSVLogger;
 
-import java.util.Scanner;
+import java.security.SecureRandom;
+import java.util.Base64;
 
 public class MainApp {
 
     public static void main(String[] args) throws Exception {
 
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter the message to encrypt: ");
-        String message = scanner.nextLine();
+        int samples = 5000; // 5000 RSA + 5000 PQC = 10000 rows
+        SecureRandom random = new SecureRandom();
 
-        System.out.println("\nOriginal Message: " + message);
-        System.out.println("===================================");
+        System.out.println("Generating dataset...\n");
 
-        /* ---------------- RSA SECTION ---------------- */
-        RSAEncryption rsa = new RSAEncryption();
+        for (int i = 0; i < samples; i++) {
 
-        rsa.generateKeys();
-        byte[] rsaEncrypted = rsa.encrypt(message);
-        String rsaDecrypted = rsa.decrypt(rsaEncrypted);
-        String rsaAttackResult =
-                QuantumAttackSimulator.simulateAttack("RSA");
+            /* Generate random plaintext */
+            byte[] msg = new byte[32];
+            random.nextBytes(msg);
+            String message = Base64.getEncoder().encodeToString(msg);
 
-        System.out.println("\n----- RSA RESULTS -----");
-        System.out.println("Decrypted Message      : " + rsaDecrypted);
-        System.out.println("Key Generation Time    : " + rsa.getKeyGenerationTime() + " µs");
-        System.out.println("Encryption Time        : " + rsa.getEncryptionTime() + " µs");
-        System.out.println("Decryption Time        : " + rsa.getDecryptionTime() + " µs");
-        System.out.println("Ciphertext Size        : " + rsa.getCiphertextSize() + " bytes");
-        System.out.println("Quantum Attack Result  : " + rsaAttackResult);
+            /* ---------------- RSA SECTION (REAL) ---------------- */
+            RSAEncryption rsa = new RSAEncryption();
 
-        /*CSVLogger.log(
-                "RSA",
-                rsa.getKeySize(),
-                rsa.getKeyGenerationTime(),
-                rsa.getEncryptionTime(),
-                rsa.getDecryptionTime(),
-                rsa.getCiphertextSize(),
-                rsaAttackResult
-        );*/
+            rsa.generateKeys();
+            byte[] rsaEncrypted = rsa.encrypt(message);
+            rsa.decrypt(rsaEncrypted);
 
-        System.out.println("-----------------------------------");
+            String rsaAttackResult =
+                    QuantumAttackSimulator.simulateAttack("RSA");
 
-        /* ---------------- PQC SECTION ---------------- */
-        PQCEncryption pqc = new PQCEncryption();
+            CSVLogger.log(
+                    "RSA",
+                    rsa.getKeySize(),
+                    rsa.getKeyGenerationTime(),
+                    rsa.getEncryptionTime(),
+                    rsa.getDecryptionTime(),
+                    rsa.getCiphertextSize(),
+                    rsaAttackResult
+            );
 
-        pqc.generateKeys();
-        String pqcEncrypted = pqc.encrypt(message);
-        String pqcDecrypted = pqc.decrypt(pqcEncrypted);
-        String pqcAttackResult =
-                QuantumAttackSimulator.simulateAttack("PQC");
 
-        System.out.println("\n----- PQC RESULTS -----");
-        System.out.println("Decrypted Message      : " + pqcDecrypted);
-        System.out.println("Key Generation Time    : " + pqc.getKeyGenerationTime() + " µs");
-        System.out.println("Encryption Time        : " + pqc.getEncryptionTime() + " µs");
-        System.out.println("Decryption Time        : " + pqc.getDecryptionTime() + " µs");
-        System.out.println("Ciphertext Size        : " + pqc.getCiphertextSize() + " bytes");
-        System.out.println("Quantum Attack Result  : " + pqcAttackResult);
+            /* ---------------- PQC SECTION (SIMULATED REALISTIC) ---------------- */
+            PQCEncryption pqc = new PQCEncryption();
 
-        /*CSVLogger.log(
-                "PQC",
-                pqc.getKeySize(),
-                pqc.getKeyGenerationTime(),
-                pqc.getEncryptionTime(),
-                pqc.getDecryptionTime(),
-                pqc.getCiphertextSize(),
-                pqcAttackResult
-        );*/
+            pqc.generateKeys();
+            String pqcEncrypted = pqc.encrypt(message);
+            pqc.decrypt(pqcEncrypted);
 
-        //System.out.println("===================================");
-       // System.out.println("Results saved in results.csv");
+            String pqcAttackResult =
+                    QuantumAttackSimulator.simulateAttack("PQC");
 
-        scanner.close();
+            CSVLogger.log(
+                    "PQC",
+                    pqc.getKeySize(),
+                    pqc.getKeyGenerationTime(),
+                    pqc.getEncryptionTime(),
+                    pqc.getDecryptionTime(),
+                    pqc.getCiphertextSize(),
+                    pqcAttackResult
+            );
+
+            if (i % 500 == 0) {
+                System.out.println("Generated " + (i * 2) + " samples...");
+            }
+        }
+
+        System.out.println("\nDataset generation completed.");
+        System.out.println("Results saved in results.csv");
     }
 }

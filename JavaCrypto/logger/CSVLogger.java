@@ -1,6 +1,5 @@
 package JavaCrypto.logger;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -12,32 +11,21 @@ public class CSVLogger {
             String algorithm,
             int keySize,
             long keyGenTime,
-            long encryptionTime,
-            long decryptionTime,
-            int ciphertextSize,
+            long encTime,
+            long decTime,
+            int cipherSize,
             String attackResult) {
 
-        try {
-
-            File file = new File(FILE_NAME);
-            boolean fileExists = file.exists();
-
-            FileWriter writer = new FileWriter(FILE_NAME, true);
-
-            if (!fileExists) {
-                writer.append("Algorithm,KeySize,KeyGenerationTime(us),EncryptionTime(us),DecryptionTime(us),CiphertextSize(bytes),AttackResult\n");
-            }
+        try (FileWriter writer = new FileWriter(FILE_NAME, true)) {
 
             writer.append(algorithm).append(",")
                     .append(String.valueOf(keySize)).append(",")
                     .append(String.valueOf(keyGenTime)).append(",")
-                    .append(String.valueOf(encryptionTime)).append(",")
-                    .append(String.valueOf(decryptionTime)).append(",")
-                    .append(String.valueOf(ciphertextSize)).append(",")
-                    .append(attackResult).append("\n");
-
-            writer.flush();
-            writer.close();
+                    .append(String.valueOf(encTime)).append(",")
+                    .append(String.valueOf(decTime)).append(",")
+                    .append(String.valueOf(cipherSize)).append(",")
+                    .append(attackResult)
+                    .append("\n");
 
         } catch (IOException e) {
             e.printStackTrace();
